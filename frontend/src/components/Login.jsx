@@ -1,9 +1,15 @@
 import axios from "axios"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import Store from "../hooks/context"
 
 function Login(){
 
+    const { user , setUser } = useContext(Store)
+
     const [ formData , setFormData ] = useState({ username : "" , password : "" })
+    const [isLoading , setIsLoading ] = useState(false)
+    const navigate = useNavigate()
 
     function handleChange(e){
         const { name , value } = e.target
@@ -11,10 +17,23 @@ function Login(){
     }
 
     async function handleSubmit(e){
-        e.preventDefault()
-        console.log(formData)    
-        const response = await axios.post('http://localhost:3000/user/login' , formData )
-        console.log(response)
+        try{
+            setIsLoading(true)
+            e.preventDefault()
+            console.log(formData)    
+            const response = await axios.post('http://localhost:3000/user/login' , formData )
+            console.log(response)
+            if(response.data.token){
+                    setUser(response.data.token , "nitin" )
+                    navigate('/')
+            }
+        }
+        catch(err){
+            console.log("oops" , err.message)
+        }
+        finally{
+            setIsLoading(false)
+        }
     }
 
     return <section className="bg-gray-50 dark:bg-gray-900">
@@ -48,7 +67,9 @@ function Login(){
                         </div>
                         <a href="#" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">Forgot password?</a>
                     </div>
-                    <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sign in</button>
+                    <button disabled={isLoading ? true : false} className="w-full text-white bg-blue-600 disabled:bg-blue-400 disabled:cursor-wait hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        { isLoading ?  "Loading..." : "Sign In" }
+                    </button>
                     <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                         Don’t have an account yet? <a href="#" className="font-medium text-blue-600 hover:underline dark:text-blue-500">Sign up</a>
                     </p>

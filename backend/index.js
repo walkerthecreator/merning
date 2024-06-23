@@ -44,14 +44,14 @@ async function postLogin(req , res){
     // checking whether user same 
     console.log(checkingUsername)
     if(!checkingUsername){
-        return res.status(400).json({ success : false , message : "username does'nt  exsist" })
+        return res.json({ success : false , message : "username does'nt  exsist" })
     }
         
     const checkPassword = await bcrypt.compare(password , checkingUsername.password )
     console.log(checkPassword)
         
     if(!checkPassword){
-        return res.status(400).json({ success : false , message : "password did not matched" })
+        return res.json({ success : false , message : "password did not matched" })
     }
 
     const token = jwt.sign({ id : checkingUsername._id , username : username  } , privateKey )

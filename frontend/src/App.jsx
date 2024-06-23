@@ -1,24 +1,16 @@
 import { useEffect } from "react"
 import axios from "axios"
 import Login from "./components/Login.jsx"
+import { Route , Routes } from "react-router-dom"
 
 const App = () => {
 
-    useEffect(()=>{
-        async function callServer(){
-            const response = await axios.get('http://localhost:3000/blogs')
-            const data = response.data
-            console.log(data)
-        }
-
-        // callServer()
-    } , [])
-
 
   return (
-    <div>
-      <Login></Login>
-    </div>
+      <Routes>
+        <Route path="/login" element={<Login/>}></Route>
+        <Route path="/" element={<h1>welcome to homepage</h1>}></Route>
+      </Routes>
   )
 }
 
